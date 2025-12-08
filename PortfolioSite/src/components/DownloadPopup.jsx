@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { api } from '../services/api'
 
 export default function DownloadPopup({ isOpen, file, initialPosition }) {
     const [position, setPosition] = useState(initialPosition || { x: 50, y: 50 })
     const [isDragging, setIsDragging] = useState(false)
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+    const [dbResume, setDbResume] = useState(null)
     const popupRef = useRef(null)
 
     useEffect(() => {
@@ -11,6 +13,14 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
             setPosition(initialPosition)
         }
     }, [isOpen, initialPosition])
+
+    useEffect(() => {
+        if (isOpen) {
+            api.getResume()
+                .then(data => setDbResume(data))
+                .catch(() => setDbResume(null))
+        }
+    }, [isOpen])
 
     const handleMouseDown = (e) => {
         if (e.target.closest('a')) return
@@ -51,6 +61,12 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
 
     if (!isOpen) return null
 
+    const API_BASE_URL = import.meta.env.VITE_API_URL || ''
+    const downloadUrl = dbResume ? `${API_BASE_URL}/api/resume/download` : file.src
+    const fileName = dbResume ? dbResume.original_name : file.name
+    const fileType = dbResume?.mime_type?.includes('pdf') ? 'PDF Document' :
+        dbResume?.mime_type?.includes('word') ? 'Word Document' : 'PDF Document'
+
     return (
         <div
             ref={popupRef}
@@ -68,13 +84,15 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
                 </svg>
             </div>
             <div className="download-popup-info">
-                <span className="download-popup-filename">{file.name}</span>
-                <span className="download-popup-type">PDF Document</span>
+                <span className="download-popup-filename">{fileName}</span>
+                <span className="download-popup-type">{fileType}</span>
             </div>
             <a
-                href={file.src}
-                download={file.name}
+                href={downloadUrl}
+                download={fileName}
                 className="download-popup-btn"
+                target={dbResume ? '_blank' : undefined}
+                rel={dbResume ? 'noopener noreferrer' : undefined}
             >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />

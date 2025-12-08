@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { api } from '../services/api'
+import React from 'react'
 
 import img1 from '../assets/projects/studentprayer/IMG_2029.PNG'
 import img2 from '../assets/projects/studentprayer/IMG_2030.PNG'
@@ -7,7 +6,8 @@ import img3 from '../assets/projects/studentprayer/IMG_2033.PNG'
 import img4 from '../assets/projects/studentprayer/IMG_2034.PNG'
 import img5 from '../assets/projects/studentprayer/IMG_2035.PNG'
 
-const fallbackImages = [
+// Static project images for popup gallery
+export const projectImages = [
     { src: img1, alt: 'Prayer Requests' },
     { src: img2, alt: 'Home Page' },
     { src: img3, alt: 'Sign-in' },
@@ -15,84 +15,35 @@ const fallbackImages = [
     { src: img5, alt: 'Profile' }
 ]
 
-const fallbackProject = {
-    title: 'Student Prayer',
-    description: 'A faith-centered mobile application designed for K-12 students to build a consistent prayer life and connect with their school community through shared spiritual experiences.',
-    tech_stack: ['React Native', 'Firebase', 'iOS', 'Android'],
-    features: [
-        { icon: '🙏', title: 'Prayer Requests', description: 'Students can submit prayer requests and pray for their peers' },
-        { icon: '📺', title: 'Faith Tube', description: 'TikTok-style Christian content feed for faith inspiration' },
-        { icon: '✨', title: 'Testimonies', description: 'Share answered prayers with those who prayed for you' },
-        { icon: '🏆', title: 'Achievements', description: 'Earn levels and badges for consistent prayer habits' },
-        { icon: '📓', title: 'Prayer Journal', description: 'Document and reflect on your spiritual journey' }
-    ]
-}
-
-export function useProjects() {
-    const [projects, setProjects] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [usingFallback, setUsingFallback] = useState(false)
-
-    useEffect(() => {
-        loadProjects()
-    }, [])
-
-    const loadProjects = async () => {
-        try {
-            setLoading(true)
-            const data = await api.getProjects()
-            if (data && data.length > 0) {
-                setProjects(data)
-                setUsingFallback(false)
-            } else {
-                setProjects([fallbackProject])
-                setUsingFallback(true)
-            }
-        } catch (err) {
-            console.log('Using fallback project data:', err.message)
-            setProjects([fallbackProject])
-            setUsingFallback(true)
-        } finally {
-            setLoading(false)
-        }
+// Static project data - no database fetching
+const projects = [
+    {
+        id: 1,
+        title: 'Student Prayer',
+        description: 'A faith-centered mobile application designed for K-12 students to build a consistent prayer life and connect with their school community through shared spiritual experiences.',
+        tech_stack: ['React Native', 'Firebase', 'iOS', 'Android'],
+        features: [
+            { icon: '🙏', title: 'Prayer Requests', description: 'Students can submit prayer requests and pray for their peers' },
+            { icon: '📺', title: 'Faith Tube', description: 'TikTok-style Christian content feed for faith inspiration' },
+            { icon: '✨', title: 'Testimonies', description: 'Share answered prayers with those who prayed for you' },
+            { icon: '🏆', title: 'Achievements', description: 'Earn levels and badges for consistent prayer habits' },
+            { icon: '📓', title: 'Prayer Journal', description: 'Document and reflect on your spiritual journey' }
+        ],
+        images: projectImages
     }
-
-    return { projects, loading, error, usingFallback, refetch: loadProjects }
-}
-
-export function getProjectImages(project, usingFallback) {
-    if (usingFallback || !project.images || project.images.length === 0) {
-        return fallbackImages
-    }
-    return project.images.map(img => ({
-        src: api.getImageUrl(img.url),
-        alt: img.alt || 'Project screenshot'
-    }))
-}
+]
 
 export default function Projects() {
-    const { projects, loading, usingFallback } = useProjects()
-
-    if (loading) {
-        return (
-            <div className="page-content projects-page">
-                <h2>Projects</h2>
-                <div className="loading-state">Loading projects...</div>
-            </div>
-        )
-    }
-
     return (
         <div className="page-content projects-page">
             <h2>Projects</h2>
 
-            {projects.map((project, index) => (
-                <div className="project-card" key={project.id || index}>
+            {projects.map((project) => (
+                <div className="project-card" key={project.id}>
                     <div className="project-header">
                         <h3>{project.title}</h3>
                         <div className="project-tags">
-                            {(project.tech_stack || []).map((tech, i) => (
+                            {project.tech_stack.map((tech, i) => (
                                 <span className="tag" key={i}>{tech}</span>
                             ))}
                         </div>
@@ -103,7 +54,7 @@ export default function Projects() {
                     <div className="project-section">
                         <h4>Key Features</h4>
                         <div className="features-grid">
-                            {(project.features || []).map((feature, i) => (
+                            {project.features.map((feature, i) => (
                                 <div className="feature-item" key={i}>
                                     <span className="feature-icon">{feature.icon}</span>
                                     <div className="feature-content">
@@ -142,14 +93,6 @@ export default function Projects() {
                     </p>
                 </div>
             ))}
-
-            {usingFallback && (
-                <p className="data-source-note">
-                    <small>Displaying local project data</small>
-                </p>
-            )}
         </div>
     )
 }
-
-export { fallbackImages as projectImages }

@@ -1081,3 +1081,322 @@ body,
     margin-top: 16px;
     color: rgba(255, 255, 255, 0.3);
 }
+
+/* Resume Download Section */
+.resume-download-section {
+    margin-top: 20px;
+}
+
+.resume-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgb(111, 142, 194) 0%, rgb(90, 120, 170) 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(111, 142, 194, 0.3);
+}
+
+.resume-download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(111, 142, 194, 0.4);
+}
+
+.resume-download-btn:active {
+    transform: translateY(-1px);
+}
+
+.resume-download-btn .download-icon {
+    font-size: 18px;
+}
+
+.resume-download-btn .file-info {
+    font-size: 12px;
+    opacity: 0.8;
+    font-weight: 300;
+}
+
+.resume-loading {
+    display: inline-block;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.resume-unavailable {
+    display: inline-block;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.admin-login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    z-index: 1000;
+}
+
+.admin-login-card {
+    background: rgba(20, 20, 30, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(111, 142, 194, 0.3);
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+}
+
+.admin-login-card h2 {
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: rgb(111, 142, 194);
+    margin-bottom: 24px;
+}
+
+.admin-password-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 15px;
+    color: white;
+    outline: none;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.admin-password-input:focus {
+    border-color: rgb(111, 142, 194);
+}
+
+.admin-login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, rgb(111, 142, 194) 0%, rgb(90, 120, 170) 100%);
+    border: none;
+    border-radius: 10px;
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 15px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(111, 142, 194, 0.4);
+}
+
+.admin-login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.admin-error {
+    color: #e57373;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.admin-page {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: "Josefin", system-ui, sans-serif;
+}
+
+.admin-page {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: "Josefin", system-ui, sans-serif;
+    position: relative;
+    z-index: 1000;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.admin-header h2 {
+    font-size: 28px;
+    font-weight: 300;
+    color: rgb(111, 142, 194);
+    margin: 0;
+}
+
+.admin-logout-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-logout-btn:hover {
+    background: rgba(220, 80, 80, 0.2);
+    border-color: rgba(220, 80, 80, 0.4);
+    color: #e57373;
+}
+
+.admin-section {
+    background: rgba(20, 20, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.admin-section h3 {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-loading,
+.admin-no-resume {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+}
+
+.admin-resume-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.resume-file-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.resume-file-card .file-icon {
+    font-size: 32px;
+}
+
+.file-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.file-name {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.file-meta {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.admin-delete-btn {
+    padding: 8px 16px;
+    background: rgba(220, 80, 80, 0.15);
+    border: 1px solid rgba(220, 80, 80, 0.3);
+    border-radius: 8px;
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 13px;
+    color: #e57373;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-delete-btn:hover {
+    background: rgba(220, 80, 80, 0.25);
+}
+
+.admin-upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-file-input {
+    cursor: pointer;
+}
+
+.admin-file-input input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.admin-file-input:hover .file-input-label {
+    border-color: rgba(111, 142, 194, 0.4);
+    background: rgba(111, 142, 194, 0.05);
+}
+
+.admin-upload-btn {
+    padding: 14px;
+    background: linear-gradient(135deg, rgb(111, 142, 194) 0%, rgb(90, 120, 170) 100%);
+    border: none;
+    border-radius: 10px;
+    font-family: "Josefin", system-ui, sans-serif;
+    font-size: 14px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-upload-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(111, 142, 194, 0.4);
+}
+
+.admin-upload-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-message {
+    font-size: 13px;
+    color: #e57373;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.admin-message.success {
+    color: #81c784;
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import Background from './components/Background'
 import NavBar from './components/NavBar'
@@ -8,6 +8,7 @@ import About from './pages/About'
 import Projects, { projectImages } from './pages/Projects'
 import Resume from './pages/Resume'
 import Contact from './pages/Contact'
+import Admin, { AdminLogin } from './pages/Admin'
 import memphisImg from './assets/memphis.png'
 import resumePdf from './assets/resume/LatrellPrice_Resume2025.pdf'
 
@@ -63,6 +64,17 @@ const pageConfig = {
 
 function App() {
   const [openWindows, setOpenWindows] = useState({})
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const path = window.location.pathname
+    if (path === '/admin') {
+      setIsAdmin(true)
+      const token = sessionStorage.getItem('adminToken')
+      if (token) setIsLoggedIn(true)
+    }
+  }, [])
 
   const handleNavClick = (pageName) => {
     setOpenWindows(prev => ({
@@ -76,6 +88,24 @@ function App() {
       ...prev,
       [pageName]: false
     }))
+  }
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('adminToken')
+    setIsLoggedIn(false)
+  }
+
+  if (isAdmin) {
+    return (
+      <div className="app-root">
+        <Background />
+        {isLoggedIn ? (
+          <Admin onLogout={handleLogout} />
+        ) : (
+          <AdminLogin onLogin={() => setIsLoggedIn(true)} />
+        )}
+      </div>
+    )
   }
 
   return (

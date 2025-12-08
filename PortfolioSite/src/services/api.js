@@ -1,68 +1,39 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
+const getAuthHeaders = () => {
+    const token = sessionStorage.getItem('adminToken');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+
 export const api = {
-    async getProjects() {
-        const response = await fetch(`${API_BASE_URL}/api/projects`);
-        if (!response.ok) throw new Error('Failed to fetch projects');
+    async getResume() {
+        const response = await fetch(`${API_BASE_URL}/api/resume`);
+        if (!response.ok) throw new Error('Failed to fetch resume');
         return response.json();
     },
 
-    async getProject(id) {
-        const response = await fetch(`${API_BASE_URL}/api/projects/${id}`);
-        if (!response.ok) throw new Error('Failed to fetch project');
-        return response.json();
-    },
-
-    async createProject(projectData) {
-        const response = await fetch(`${API_BASE_URL}/api/projects`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(projectData)
-        });
-        if (!response.ok) throw new Error('Failed to create project');
-        return response.json();
-    },
-
-    async updateProject(id, projectData) {
-        const response = await fetch(`${API_BASE_URL}/api/projects/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(projectData)
-        });
-        if (!response.ok) throw new Error('Failed to update project');
-        return response.json();
-    },
-
-    async deleteProject(id) {
-        const response = await fetch(`${API_BASE_URL}/api/projects/${id}`, {
-            method: 'DELETE'
-        });
-        if (!response.ok) throw new Error('Failed to delete project');
-        return response.json();
-    },
-
-    async uploadProjectImages(projectId, files, altTexts = []) {
+    async uploadResume(file) {
         const formData = new FormData();
-        files.forEach(file => formData.append('images', file));
-        formData.append('altTexts', JSON.stringify(altTexts));
-
-        const response = await fetch(`${API_BASE_URL}/api/projects/${projectId}/images`, {
+        formData.append('resume', file);
+        const response = await fetch(`${API_BASE_URL}/api/resume`, {
             method: 'POST',
+            headers: getAuthHeaders(),
             body: formData
         });
-        if (!response.ok) throw new Error('Failed to upload images');
+        if (!response.ok) throw new Error('Failed to upload resume');
         return response.json();
     },
 
-    async deleteImage(imageId) {
-        const response = await fetch(`${API_BASE_URL}/api/images/${imageId}`, {
-            method: 'DELETE'
+    async deleteResume() {
+        const response = await fetch(`${API_BASE_URL}/api/resume`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
         });
-        if (!response.ok) throw new Error('Failed to delete image');
+        if (!response.ok) throw new Error('Failed to delete resume');
         return response.json();
     },
 
-    getImageUrl(path) {
+    getResumeUrl(path) {
         if (!path) return '';
         if (path.startsWith('http')) return path;
         return `${API_BASE_URL}${path}`;
