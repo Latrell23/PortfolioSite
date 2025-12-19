@@ -12,3 +12,8 @@ CREATE TABLE IF NOT EXISTS resume (
     mime_type VARCHAR(100),
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Grant privileges to portfolio_user
+CREATE USER IF NOT EXISTS 'portfolio_user'@'%' IDENTIFIED BY 'portfolio_pass_123';
+GRANT ALL PRIVILEGES ON portfolio.* TO 'portfolio_user'@'%';
+FLUSH PRIVILEGES;
