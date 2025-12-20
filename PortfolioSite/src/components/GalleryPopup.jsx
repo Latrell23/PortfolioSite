@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useZIndex } from '../context/ZIndexContext'
 
 export default function GalleryPopup({ isOpen, images, initialPosition }) {
     const [position, setPosition] = useState(initialPosition || { x: 50, y: 50 })
@@ -6,6 +7,7 @@ export default function GalleryPopup({ isOpen, images, initialPosition }) {
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
     const [currentIndex, setCurrentIndex] = useState(0)
     const popupRef = useRef(null)
+    const { bringToFront, getPopupZIndex } = useZIndex()
 
     useEffect(() => {
         if (isOpen && initialPosition) {
@@ -14,8 +16,15 @@ export default function GalleryPopup({ isOpen, images, initialPosition }) {
         }
     }, [isOpen, initialPosition])
 
+    const handlePopupClick = (e) => {
+        // Don't bring to front if clicking navigation buttons or dots
+        if (e.target.closest('.gallery-nav-btn') || e.target.closest('.gallery-dots')) return
+        bringToFront('popup')
+    }
+
     const handleMouseDown = (e) => {
         if (e.target.closest('.gallery-nav-btn') || e.target.closest('.gallery-dots')) return
+        bringToFront('popup')
         setIsDragging(true)
         const rect = popupRef.current.getBoundingClientRect()
         setDragOffset({
@@ -26,6 +35,7 @@ export default function GalleryPopup({ isOpen, images, initialPosition }) {
 
     const handleTouchStart = (e) => {
         if (e.target.closest('.gallery-nav-btn') || e.target.closest('.gallery-dots')) return
+        bringToFront('popup')
         setIsDragging(true)
         const rect = popupRef.current.getBoundingClientRect()
         const touch = e.touches[0]
@@ -99,9 +109,11 @@ export default function GalleryPopup({ isOpen, images, initialPosition }) {
             style={{
                 left: `${position.x}px`,
                 top: `${position.y}px`,
+                zIndex: getPopupZIndex(),
             }}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
+            onClick={handlePopupClick}
         >
             <div className="gallery-image-wrapper">
                 <img src={currentImage.src} alt={currentImage.alt} className="gallery-image" />
@@ -139,3 +151,4 @@ export default function GalleryPopup({ isOpen, images, initialPosition }) {
         </div>
     )
 }
+

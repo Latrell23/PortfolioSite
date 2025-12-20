@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useZIndex } from '../context/ZIndexContext'
 
 export default function LinkPopup({ isOpen, links, initialPosition }) {
     const [position, setPosition] = useState(initialPosition || { x: 50, y: 50 })
     const [isDragging, setIsDragging] = useState(false)
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
     const popupRef = useRef(null)
+    const { bringToFront, getPopupZIndex } = useZIndex()
 
     useEffect(() => {
         if (isOpen && initialPosition) {
@@ -12,8 +14,15 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
         }
     }, [isOpen, initialPosition])
 
+    const handlePopupClick = (e) => {
+        // Don't bring to front if clicking a link
+        if (e.target.closest('a')) return
+        bringToFront('popup')
+    }
+
     const handleMouseDown = (e) => {
         if (e.target.closest('a')) return
+        bringToFront('popup')
         setIsDragging(true)
         const rect = popupRef.current.getBoundingClientRect()
         setDragOffset({
@@ -24,6 +33,7 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
 
     const handleTouchStart = (e) => {
         if (e.target.closest('a')) return
+        bringToFront('popup')
         setIsDragging(true)
         const rect = popupRef.current.getBoundingClientRect()
         const touch = e.touches[0]
@@ -100,9 +110,11 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
             style={{
                 left: `${position.x}px`,
                 top: `${position.y}px`,
+                zIndex: getPopupZIndex(),
             }}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
+            onClick={handlePopupClick}
         >
             <div className="link-popup-header">Connect With Me</div>
             <div className="link-popup-links">
@@ -122,3 +134,4 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
         </div>
     )
 }
+

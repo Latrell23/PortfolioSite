@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { api } from '../services/api'
+import { useZIndex } from '../context/ZIndexContext'
 
 export default function DownloadPopup({ isOpen, file, initialPosition }) {
     const [position, setPosition] = useState(initialPosition || { x: 50, y: 50 })
@@ -7,6 +8,7 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
     const [dbResume, setDbResume] = useState(null)
     const popupRef = useRef(null)
+    const { bringToFront, getPopupZIndex } = useZIndex()
 
     useEffect(() => {
         if (isOpen && initialPosition) {
@@ -22,8 +24,15 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
         }
     }, [isOpen])
 
+    const handlePopupClick = (e) => {
+        // Don't bring to front if clicking download link
+        if (e.target.closest('a')) return
+        bringToFront('popup')
+    }
+
     const handleMouseDown = (e) => {
         if (e.target.closest('a')) return
+        bringToFront('popup')
         setIsDragging(true)
         const rect = popupRef.current.getBoundingClientRect()
         setDragOffset({
@@ -34,6 +43,7 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
 
     const handleTouchStart = (e) => {
         if (e.target.closest('a')) return
+        bringToFront('popup')
         setIsDragging(true)
         const rect = popupRef.current.getBoundingClientRect()
         const touch = e.touches[0]
@@ -103,9 +113,11 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
             style={{
                 left: `${position.x}px`,
                 top: `${position.y}px`,
+                zIndex: getPopupZIndex(),
             }}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
+            onClick={handlePopupClick}
         >
             <div className="download-popup-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="48" height="48">
@@ -132,3 +144,4 @@ export default function DownloadPopup({ isOpen, file, initialPosition }) {
         </div>
     )
 }
+

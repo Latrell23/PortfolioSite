@@ -9,6 +9,7 @@ import Projects, { projectImages } from './pages/Projects'
 import Resume from './pages/Resume'
 import Contact from './pages/Contact'
 import Admin, { AdminLogin } from './pages/Admin'
+import { ZIndexProvider } from './context/ZIndexContext'
 import memphisImg from './assets/memphis.png'
 import resumePdf from './assets/resume/LatrellPrice_Resume2025.pdf'
 
@@ -109,27 +110,29 @@ function App() {
   }
 
   return (
-    <div className="app-root">
-      <Background />
-      <div className='signature' />
-      <Screen>
-        <NavBar onNavClick={handleNavClick} />
-        {Object.keys(pageConfig).map((pageName) => (
-          <Window
-            key={pageName}
-            isOpen={openWindows[pageName] || false}
-            onClose={() => handleCloseWindow(pageName)}
-            title={pageName}
-            popup={pageConfig[pageName].popup}
-            linkPopup={pageConfig[pageName].linkPopup}
-            downloadPopup={pageConfig[pageName].downloadPopup}
-            galleryPopup={pageConfig[pageName].galleryPopup}
-          >
-            {pageConfig[pageName].component}
-          </Window>
-        ))}
-      </Screen>
-    </div>
+    <ZIndexProvider>
+      <div className="app-root">
+        <Background />
+        <div className='signature' />
+        <Screen>
+          <NavBar onNavClick={handleNavClick} />
+          {Object.keys(pageConfig).map((pageName) => (
+            <Window
+              key={pageName}
+              isOpen={openWindows[pageName] || false}
+              onClose={() => handleCloseWindow(pageName)}
+              title={pageName}
+              popup={pageConfig[pageName].popup}
+              linkPopup={pageConfig[pageName].linkPopup}
+              downloadPopup={pageConfig[pageName].downloadPopup}
+              galleryPopup={pageConfig[pageName].galleryPopup}
+            >
+              {pageConfig[pageName].component}
+            </Window>
+          ))}
+        </Screen>
+      </div>
+    </ZIndexProvider>
   )
 }
 

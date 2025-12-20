@@ -3,12 +3,14 @@ import Popup from './Popup'
 import LinkPopup from './LinkPopup'
 import DownloadPopup from './DownloadPopup'
 import GalleryPopup from './GalleryPopup'
+import { useZIndex } from '../context/ZIndexContext'
 
 export default function Window({ isOpen, onClose, title, children, popup, linkPopup, downloadPopup, galleryPopup }) {
     const [position, setPosition] = useState({ x: 100, y: 100 })
     const [isDragging, setIsDragging] = useState(false)
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
     const windowRef = useRef(null)
+    const { bringToFront, getWindowZIndex } = useZIndex()
 
     useEffect(() => {
         if (isOpen) {
@@ -26,8 +28,13 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
         }
     }, [isOpen])
 
+    const handleWindowClick = () => {
+        bringToFront('window')
+    }
+
     const handleMouseDown = (e) => {
         if (e.target.closest('.window-close-btn')) return
+        bringToFront('window')
         setIsDragging(true)
         const rect = windowRef.current.getBoundingClientRect()
         setDragOffset({
@@ -38,6 +45,7 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
 
     const handleTouchStart = (e) => {
         if (e.target.closest('.window-close-btn')) return
+        bringToFront('window')
         setIsDragging(true)
         const rect = windowRef.current.getBoundingClientRect()
         const touch = e.touches[0]
@@ -131,7 +139,9 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
                 style={{
                     left: `${position.x}px`,
                     top: `${position.y}px`,
+                    zIndex: getWindowZIndex(),
                 }}
+                onClick={handleWindowClick}
             >
                 <div
                     className="window-header"
@@ -152,3 +162,4 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
         </>
     )
 }
+
