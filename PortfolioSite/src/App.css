@@ -12,6 +12,7 @@ body,
     overflow: hidden;
 }
 
+/* Fallback background color */
 .os-background {
     position: fixed;
     inset: 0;
@@ -19,7 +20,11 @@ body,
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #0f0f1a;
+    /* Dark fallback */
 }
+
+/* ... existing video styles ... */
 
 .os-video {
     position: absolute;
@@ -35,6 +40,7 @@ body,
     pointer-events: none;
     z-index: -1;
 }
+
 
 .signature {
     position: fixed;
@@ -1399,4 +1405,195 @@ body,
 
 .admin-message.success {
     color: #81c784;
+}
+
+/* ==================== MOBILE & SAFARI FIXES ==================== */
+
+/* Safari-specific video fixes */
+.os-video {
+    /* Ensure video covers the full viewport on iOS */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Touch action improvements for draggable elements */
+.window-container,
+.popup-container,
+.link-popup-container,
+.download-popup-container,
+.gallery-popup-container {
+    touch-action: none;
+    /* Prevent default touch behaviors while dragging */
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.window-header {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+
+    /* Window sizing for mobile - let React handle positioning */
+    .window-container {
+        min-width: unset;
+        width: 90vw;
+        max-width: 95vw;
+        height: auto;
+        max-height: 80dvh;
+        /* Don't force position - let React handle it for dragging */
+    }
+
+    /* Navigation styling */
+    .nav-div {
+        width: 100%;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    .nav-div h1 {
+        font-size: 22px;
+        width: auto;
+        text-align: center;
+        margin: 10px;
+    }
+
+    /* Signature positioning */
+    .signature {
+        width: 120px;
+        height: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 8px;
+    }
+
+    /* Popup sizing for mobile */
+    .popup-container {
+        max-width: 85vw;
+        padding: 8px 8px 40px 8px;
+    }
+
+    .popup-image {
+        width: 200px;
+        height: 200px;
+    }
+
+    .popup-caption {
+        font-size: 12px;
+        bottom: 8px;
+    }
+
+    /* Link popup mobile */
+    .link-popup-container {
+        min-width: 160px;
+        padding: 12px;
+    }
+
+    /* Download popup mobile */
+    .download-popup-container {
+        min-width: 140px;
+        padding: 16px;
+    }
+
+    .download-popup-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .download-popup-icon svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Gallery popup mobile */
+    .gallery-popup-container {
+        max-width: 90vw;
+    }
+
+    .gallery-image {
+        max-width: 80vw;
+        max-height: 40vh;
+    }
+
+    /* Window content adjustments */
+    .window-content {
+        padding: 16px;
+    }
+
+    .page-content h2 {
+        font-size: 22px;
+    }
+
+    .page-content p {
+        font-size: 14px;
+    }
+
+    /* Resume page mobile */
+    .resume-page {
+        max-width: 100%;
+    }
+
+    .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .experience-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    /* Contact page mobile */
+    .contact-page {
+        max-width: 100%;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 16px;
+        /* Prevents iOS zoom on focus */
+    }
+}
+
+/* Extra small screens (iPhone SE, etc) */
+@media (max-width: 375px) {
+    .window-container {
+        width: 95vw;
+        max-height: 85dvh;
+    }
+
+    .nav-div h1 {
+        font-size: 20px;
+        margin: 8px;
+    }
+
+    .popup-image {
+        width: 160px;
+        height: 160px;
+    }
+
+    .signature {
+        width: 100px;
+        height: 50px;
+    }
+}
+
+/* iOS Safari safe area support */
+@supports (padding: max(0px)) {
+    .app-root {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
+    .signature {
+        bottom: max(10px, env(safe-area-inset-bottom));
+    }
 }

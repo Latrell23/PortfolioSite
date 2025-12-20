@@ -14,9 +14,14 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
         if (isOpen) {
             const viewportWidth = window.innerWidth
             const viewportHeight = window.innerHeight
+            const isMobile = viewportWidth < 768
+            // Estimate window width based on CSS (600px desktop assumption or 90vw mobile)
+            const estimatedWidth = isMobile ? viewportWidth * 0.9 : 600
+            const estimatedHeight = isMobile ? viewportHeight * 0.5 : 400
+
             setPosition({
-                x: Math.max(50, (viewportWidth - 600) / 2),
-                y: Math.max(50, (viewportHeight - 400) / 2)
+                x: Math.max(isMobile ? viewportWidth * 0.05 : 50, (viewportWidth - estimatedWidth) / 2),
+                y: Math.max(50, (viewportHeight - estimatedHeight) / 2)
             })
         }
     }, [isOpen])
@@ -31,10 +36,35 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
         })
     }
 
+    const handleTouchStart = (e) => {
+        if (e.target.closest('.window-close-btn')) return
+        setIsDragging(true)
+        const rect = windowRef.current.getBoundingClientRect()
+        const touch = e.touches[0]
+        setDragOffset({
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top
+        })
+    }
+
     const handleMouseMove = (e) => {
         if (!isDragging) return
         const newX = e.clientX - dragOffset.x
         const newY = e.clientY - dragOffset.y
+        const maxX = window.innerWidth - (windowRef.current?.offsetWidth || 300)
+        const maxY = window.innerHeight - (windowRef.current?.offsetHeight || 200)
+        setPosition({
+            x: Math.max(0, Math.min(newX, maxX)),
+            y: Math.max(0, Math.min(newY, maxY))
+        })
+    }
+
+    const handleTouchMove = (e) => {
+        if (!isDragging) return
+        e.preventDefault() // Prevent scrolling while dragging
+        const touch = e.touches[0]
+        const newX = touch.clientX - dragOffset.x
+        const newY = touch.clientY - dragOffset.y
         const maxX = window.innerWidth - (windowRef.current?.offsetWidth || 300)
         const maxY = window.innerHeight - (windowRef.current?.offsetHeight || 200)
         setPosition({
@@ -51,10 +81,14 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
         if (isDragging) {
             document.addEventListener('mousemove', handleMouseMove)
             document.addEventListener('mouseup', handleMouseUp)
+            document.addEventListener('touchmove', handleTouchMove, { passive: false })
+            document.addEventListener('touchend', handleMouseUp)
         }
         return () => {
             document.removeEventListener('mousemove', handleMouseMove)
             document.removeEventListener('mouseup', handleMouseUp)
+            document.removeEventListener('touchmove', handleTouchMove)
+            document.removeEventListener('touchend', handleMouseUp)
         }
     }, [isDragging, dragOffset])
 
@@ -102,6 +136,7 @@ export default function Window({ isOpen, onClose, title, children, popup, linkPo
                 <div
                     className="window-header"
                     onMouseDown={handleMouseDown}
+                    onTouchStart={handleTouchStart}
                 >
                     <span className="window-title">{title}</span>
                     <button className="window-close-btn" onClick={onClose}>

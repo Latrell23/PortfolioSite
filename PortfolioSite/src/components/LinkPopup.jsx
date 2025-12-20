@@ -22,10 +22,35 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
         })
     }
 
+    const handleTouchStart = (e) => {
+        if (e.target.closest('a')) return
+        setIsDragging(true)
+        const rect = popupRef.current.getBoundingClientRect()
+        const touch = e.touches[0]
+        setDragOffset({
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top
+        })
+    }
+
     const handleMouseMove = (e) => {
         if (!isDragging) return
         const newX = e.clientX - dragOffset.x
         const newY = e.clientY - dragOffset.y
+        const maxX = window.innerWidth - (popupRef.current?.offsetWidth || 200)
+        const maxY = window.innerHeight - (popupRef.current?.offsetHeight || 200)
+        setPosition({
+            x: Math.max(0, Math.min(newX, maxX)),
+            y: Math.max(0, Math.min(newY, maxY))
+        })
+    }
+
+    const handleTouchMove = (e) => {
+        if (!isDragging) return
+        e.preventDefault()
+        const touch = e.touches[0]
+        const newX = touch.clientX - dragOffset.x
+        const newY = touch.clientY - dragOffset.y
         const maxX = window.innerWidth - (popupRef.current?.offsetWidth || 200)
         const maxY = window.innerHeight - (popupRef.current?.offsetHeight || 200)
         setPosition({
@@ -42,10 +67,14 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
         if (isDragging) {
             document.addEventListener('mousemove', handleMouseMove)
             document.addEventListener('mouseup', handleMouseUp)
+            document.addEventListener('touchmove', handleTouchMove, { passive: false })
+            document.addEventListener('touchend', handleMouseUp)
         }
         return () => {
             document.removeEventListener('mousemove', handleMouseMove)
             document.removeEventListener('mouseup', handleMouseUp)
+            document.removeEventListener('touchmove', handleTouchMove)
+            document.removeEventListener('touchend', handleMouseUp)
         }
     }, [isDragging, dragOffset])
 
@@ -73,6 +102,7 @@ export default function LinkPopup({ isOpen, links, initialPosition }) {
                 top: `${position.y}px`,
             }}
             onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
         >
             <div className="link-popup-header">Connect With Me</div>
             <div className="link-popup-links">
